@@ -2,7 +2,8 @@ import { importSenity } from "./import-senity";
 
 export interface Company {name: string; companyDevices?: string}
 
-const AUTH_TOKEN = "Bearer 7a6c7c7e6816e7b3f38238b302cf96f6b94f9c330faf8e748cc77d792c01bc48";
+const AUTH_TOKEN = process.env.ATTIO_TOKEN || '';
+const API_PREFIX = process.env.ATTIO_API_PREFIX || '';
 
 const companyDevice = async () => {
 
@@ -12,7 +13,7 @@ const companyDevice = async () => {
     myHeaders.append("Authorization", AUTH_TOKEN);
     myHeaders.append("Content-Type", 'application/json');
 
-    const postResult = await fetch('https://api.attio.com/v2/objects/companies/records/query', {
+    const postResult = await fetch(API_PREFIX + '/companies/records/query', {
         method: 'POST',
         headers: myHeaders,
         redirect: 'follow'
@@ -33,7 +34,7 @@ const companyDevice = async () => {
             continue;
         }
 
-        const deviceGetResult = await fetch(`https://api.attio.com/v2/objects/companies/records/${companyId}/attributes/deviceid/values`, {
+        const deviceGetResult = await fetch(`${API_PREFIX}/companies/records/${companyId}/attributes/deviceid/values`, {
             method: 'GET',
             headers: myHeaders,
             redirect: 'follow'
@@ -53,7 +54,7 @@ const companyDevice = async () => {
                     continue;
                 }
 
-                const deviceAttributeGetResult = await fetch(`https://api.attio.com/v2/objects/partners/records/${recordId}`, {
+                const deviceAttributeGetResult = await fetch(`${API_PREFIX}/partners/records/${recordId}`, {
                     method: 'GET',
                     headers: myHeaders,
                     redirect: 'follow'

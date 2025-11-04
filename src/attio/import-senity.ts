@@ -2,10 +2,10 @@ import { createClient } from '@sanity/client';
 import { Company } from './company-device';
 
 const client = createClient({
-  projectId: 'je8kjwqv',
-  dataset: 'production',
-  apiVersion: '2025-11-04', // or a more recent stable API version
-  token: 'sk2AhQ0DA4cw3FyuTRBznDSsQZ97FNJJsebdeJabIUIubsZtlgM5KUWKajG2te9CkcSA5o5tKZuXqhcjHuVFlm5Su3XO8tyiUn3RA2vk0GzE5263rVNacw0qY0mPklMm8NrWK17xPLtL7SMGZMKO9Y7ztSWj23aFztzAJJBqsOsOIRNaEJWR', // Ensure this token has delete permissions
+  projectId: process.env.SENITY_PROJECT_ID || '',
+  dataset: process.env.SENITY_DATASET || '',
+  apiVersion: process.env.SENITY_API_VERSION || '', // or a more recent stable API version
+  token: process.env.SENITY_TOKEN || '', // Ensure this token has delete permissions
 });
 
 // To delete a document

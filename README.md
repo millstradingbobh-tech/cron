@@ -13,8 +13,3 @@ Run Locally:
     ```
 1. Check it out: [http://localhost:8080](http://localhost:8080)
 
-Run Locally with Buildpacks & Docker:
-```
-pack build --builder=gcr.io/buildpacks/builder sample-node-tsc
-docker run -it -p8080:8080 sample-node-tsc
-```
