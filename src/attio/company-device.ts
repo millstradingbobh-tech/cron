@@ -76,7 +76,9 @@ const companyDevice = async () => {
         
     }
 
-    importSenity(returnValue);
+    await importSenity(returnValue);
+
+    return false;
 }
 
 export { companyDevice };
