@@ -3,8 +3,10 @@ dotenv.config()
 
 import express from "express";
 import * as attioSanity from './src/attio';
+import { customRates } from './src/customRates';
 
 const app = express();
+app.use(express.json());
 
 app.get('/', (req, res) => {
     console.log(process.env)
@@ -16,6 +18,14 @@ app.get('/attio-sanity', async (req, res) => {
 
   await attioSanity.companyDevice();
   res.send('ok');
+});
+
+app.post("/api/shopify/rates", (req, res) => {
+    console.log(req.body)
+    const { rate } = req.body;
+    console.log("📦 Rate request:", JSON.stringify(rate, null, 2));
+    const rates = customRates(rate.currency);
+    res.json({ rates });
 });
 
 app.listen(process.env.PORT || 8080);
