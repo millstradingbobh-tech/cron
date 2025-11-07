@@ -9,7 +9,7 @@ export const customRates = (currency: string) => {
       max_delivery_date: new Date(Date.now() + 3 * 86400000).toISOString(),
     },
     {
-      service_name: "Express Shipping",
+      service_name: "On Demand - Tonight",
       service_code: "Delivered Today - Between 6pm–9pm",    // 👈 another code
       total_price: "495",               // $15.00
       currency: currency || "USD",
