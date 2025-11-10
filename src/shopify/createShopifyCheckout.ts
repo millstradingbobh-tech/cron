@@ -1,5 +1,4 @@
 import { SHOPIFY_SHOP, STOREFRONT_ACCESS_TOKEN } from './access';
-import fetch from "node-fetch";
 import { openAndCloseBrowser } from './openUrl';
 
 // 1️⃣ GraphQL mutation
