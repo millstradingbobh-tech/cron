@@ -4,6 +4,7 @@ dotenv.config()
 import express from "express";
 import * as attioSanity from './src/attio';
 import { customRates } from './src/customRates';
+import { createShopifyCheckout } from './src/shopify/createShopifyCheckout';
 
 const app = express();
 app.use(express.json());
@@ -26,6 +27,11 @@ app.post("/api/shopify/rates", (req, res) => {
     console.log("📦 Rate request:", JSON.stringify(rate, null, 2));
     const rates = customRates(rate.currency);
     res.json({ rates });
+});
+
+app.post("/api/shopify/createCheckout", async (req, res) => {
+    const cart = await createShopifyCheckout(req.body);
+    res.json({ cart });
 });
 
 app.listen(process.env.PORT || 8080);

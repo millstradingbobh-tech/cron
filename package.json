@@ -11,7 +11,7 @@
     "prettier": "prettier --write .",
     "postinstall": "tsc --build",
     "dev": "concurrently \"tsc -w\" \"nodemon dist/web.js\"",
-    "start": "node dist/web.js"
+    "start": "tsc --build && node dist/web.js"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -27,12 +27,15 @@
     "@shopify/shopify-api": "^12.1.1",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
+    "axios": "^1.13.2",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "eslint": "^8.56.0",
     "express": "^4.18.2",
     "helmet": "^7.1.0",
-    "prettier": "^3.1.1"
+    "node-fetch": "^3.3.2",
+    "prettier": "^3.1.1",
+    "puppeteer": "^24.29.1"
   },
   "engines": {
     "npm": ">=9.5.1",
