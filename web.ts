@@ -31,12 +31,12 @@ app.post("/api/shopify/rates", (req, res) => {
 });
 
 app.post("/api/shopify/createOrder", async (req, res) => {
-    const cart = await createShopifyCheckout(req.body);
-    res.json({ cart });
+    const order = await createShopifyOrder(req.body);
+    res.json({ order });
 });
 
 app.post("/api/shopify/createCheckout", async (req, res) => {
-    const cart = await createShopifyOrder(req.body);
+    const cart = await createShopifyCheckout(req.body);
     res.json({ cart });
 });
 
