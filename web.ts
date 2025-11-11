@@ -5,6 +5,7 @@ import express from "express";
 import * as attioSanity from './src/attio';
 import { customRates } from './src/customRates';
 import { createShopifyCheckout } from './src/shopify/createShopifyCheckout';
+import { createShopifyOrder } from './src/shopify/createShopifyOrder';
 
 const app = express();
 app.use(express.json());
@@ -29,8 +30,13 @@ app.post("/api/shopify/rates", (req, res) => {
     res.json({ rates });
 });
 
-app.post("/api/shopify/createCheckout", async (req, res) => {
+app.post("/api/shopify/createOrder", async (req, res) => {
     const cart = await createShopifyCheckout(req.body);
+    res.json({ cart });
+});
+
+app.post("/api/shopify/createCheckout", async (req, res) => {
+    const cart = await createShopifyOrder(req.body);
     res.json({ cart });
 });
 
