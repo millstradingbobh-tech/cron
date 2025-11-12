@@ -6,6 +6,7 @@ import * as attioSanity from './src/attio';
 import { customRates } from './src/customRates';
 import { createShopifyCheckout } from './src/shopify/createShopifyCheckout';
 import { createShopifyOrder } from './src/shopify/createShopifyOrder';
+import { getProducts } from './src/shopify/getShopifyProducts';
 
 const app = express();
 app.use(express.json());
@@ -38,6 +39,11 @@ app.post("/api/shopify/createOrder", async (req, res) => {
 app.post("/api/shopify/createCheckout", async (req, res) => {
     const cart = await createShopifyCheckout(req.body);
     res.json({ cart });
+});
+
+app.get("/api/shopify/getProducts", async (req, res) => {
+    const products = await getProducts();
+    res.json({ products });
 });
 
 app.listen(process.env.PORT || 8080);
