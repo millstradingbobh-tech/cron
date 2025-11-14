@@ -31,7 +31,7 @@ async function createCheckout(cartData: any) {
   for (const item of cartData.items) {
     lineItems.push({
       quantity: item.quantity,
-      merchandiseId: "gid://shopify/ProductVariant/" + item.id
+      merchandiseId: "gid://shopify/ProductVariant/" + item.variant_id
     })
   }
   const variables = {
