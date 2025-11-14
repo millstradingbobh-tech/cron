@@ -27,6 +27,7 @@ mutation CartCreate($input: CartInput!) {
 
 
 async function createCheckout(cartData: any) {
+
   const lineItems = [];
   for (const item of cartData.line_items) {
     lineItems.push({
@@ -42,6 +43,7 @@ async function createCheckout(cartData: any) {
       }
     }
   };
+
 
   const response = await fetch(`https://${SHOPIFY_SHOP}/api/2025-01/graphql.json`, {
     method: "POST",
@@ -69,11 +71,15 @@ async function createCheckout(cartData: any) {
 
 
 export const createShopifyCheckout = async (reqBody: any) => {
-  if (reqBody.line_items || reqBody.line_items.length === 0) {
+  if (reqBody.line_items.length === 0) {
     return 'product variant cannot be empty'
   }
-  if (!reqBody.customerEmail) {
+  if (!reqBody.email) {
     return 'email cannot be empty'
   }
-  return await createCheckout(reqBody)
+
+
+  const checkout = await createCheckout(reqBody);
+
+  return checkout;
 }
