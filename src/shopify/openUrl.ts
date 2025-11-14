@@ -7,7 +7,6 @@ export async function openAndCloseBrowser(url: string, leaveItOn: number = 5000)
     });
 
     const page = await browser.newPage();
-    console.log('pagepagepagepage',page)
 
     try {
         await page.goto(url, { waitUntil: "networkidle0" });

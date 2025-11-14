@@ -26,17 +26,19 @@ mutation CartCreate($input: CartInput!) {
 `;
 
 
-async function createCheckout(variantId: string, email: string) {
+async function createCheckout(cartData: any) {
+  const lineItems = [];
+  for (const item of cartData.items) {
+    lineItems.push({
+      quantity: item.quantity,
+      merchandiseId: "gid://shopify/ProductVariant/" + item.id
+    })
+  }
   const variables = {
     input: {
-      lines: [
-        {
-          quantity: 1,
-          merchandiseId: "gid://shopify/ProductVariant/" + variantId
-        }
-      ],
+      lines: lineItems,
       buyerIdentity: {
-        email: email
+        email: cartData.email
       }
     }
   };
@@ -66,13 +68,13 @@ async function createCheckout(variantId: string, email: string) {
 }
 
 
-export const createShopifyCheckout = async (reqBody: { variantId: string; email: string; }) => {
+export const createShopifyCheckout = async (reqBody: any) => {
   console.log(reqBody)
-  if (!reqBody.variantId) {
+  if (reqBody.items || reqBody.items.length === 0) {
     return 'product variant cannot be empty'
   }
-  if (!reqBody.email) {
+  if (!reqBody.customerEmail) {
     return 'email cannot be empty'
   }
-  return await createCheckout(reqBody.variantId, reqBody.email)
+  return await createCheckout(reqBody)
 }

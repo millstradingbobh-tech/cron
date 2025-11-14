@@ -7,6 +7,7 @@ import { customRates } from './src/customRates';
 import { createShopifyCheckout } from './src/shopify/createShopifyCheckout';
 import { createShopifyOrder } from './src/shopify/createShopifyOrder';
 import { getProducts } from './src/shopify/getShopifyProducts';
+import { test } from './src/shopify/test';
 
 const app = express();
 app.use(express.json());
@@ -43,6 +44,13 @@ app.post("/api/shopify/createCheckout", async (req, res) => {
 
 app.get("/api/shopify/getProducts", async (req, res) => {
     const products = await getProducts();
+    res.json({ products });
+});
+
+app.get("/test", async (req, res) => {
+
+    console.log('test')
+    const products = await test();
     res.json({ products });
 });
 
