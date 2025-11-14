@@ -28,7 +28,7 @@ mutation CartCreate($input: CartInput!) {
 
 async function createCheckout(cartData: any) {
   const lineItems = [];
-  for (const item of cartData.items) {
+  for (const item of cartData.line_items) {
     lineItems.push({
       quantity: item.quantity,
       merchandiseId: "gid://shopify/ProductVariant/" + item.variant_id
@@ -69,7 +69,7 @@ async function createCheckout(cartData: any) {
 
 
 export const createShopifyCheckout = async (reqBody: any) => {
-  if (reqBody.items || reqBody.items.length === 0) {
+  if (reqBody.line_items || reqBody.line_items.length === 0) {
     return 'product variant cannot be empty'
   }
   if (!reqBody.customerEmail) {
