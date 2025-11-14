@@ -69,7 +69,6 @@ async function createCheckout(cartData: any) {
 
 
 export const createShopifyCheckout = async (reqBody: any) => {
-  console.log(reqBody)
   if (reqBody.items || reqBody.items.length === 0) {
     return 'product variant cannot be empty'
   }
