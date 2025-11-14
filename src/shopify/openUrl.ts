@@ -1,5 +1,4 @@
-import chromium from "@sparticuz/chromium";
-import puppeteer from 'puppeteer-core';
+import puppeteer from 'puppeteer';
 
 export async function openAndCloseBrowser(url: string, leaveItOn: number = 5000) {
     const browser = await puppeteer.connect({
