@@ -33,13 +33,13 @@ app.post("/api/shopify/rates", (req, res) => {
 });
 
 app.post("/api/shopify/createOrder", async (req, res) => {
-    console.log(req)
+    console.log(JSON.stringify(req))
     const order = await createShopifyOrder(req.body);
     res.json({ order });
 });
 
 app.post("/api/shopify/createCheckout", async (req, res) => {
-    console.log(req)
+    console.log(JSON.stringify(req))
     const cart = await createShopifyCheckout(req.body);
     res.json({ cart });
 });
