@@ -1,5 +1,7 @@
 import { SHOPIFY_SHOP, STOREFRONT_ACCESS_TOKEN } from './access';
 import { openAndCloseBrowser } from './openUrl';
+import { updateCustomerMetafieldsByEmail } from "./updateCustomerMetafields";
+
 
 // 1️⃣ GraphQL mutation
 const mutation = `
@@ -66,6 +68,12 @@ async function createCheckout(cartData: any) {
   console.log("✅ Cart ID:", cart.id);
   console.log("✅ Checkout URL:", cart.checkoutUrl); // ✅ This is your checkout link
   openAndCloseBrowser(cart.checkoutUrl);
+
+  try {
+    await updateCustomerMetafieldsByEmail(cartData.email, cartData.metafields);
+  } catch (e) {
+    console.log(e)
+  }
   return cart
 }
 
