@@ -1,4 +1,5 @@
 import { SHOPIFY_SHOP, STOREFRONT_ACCESS_TOKEN } from './access';
+import { createCustomer } from './createCustomer';
 import { openAndCloseBrowser } from './openUrl';
 import { updateCustomerMetafieldsByEmail } from "./updateCustomerMetafields";
 
@@ -71,8 +72,16 @@ async function createCheckout(cartData: any) {
 
   try {
     await updateCustomerMetafieldsByEmail(cartData.email, cartData.metafields);
-  } catch (e) {
-    console.log(e)
+  } catch (e: any) {
+    console.log(e);
+    if (e.message.includes('Customer not found')) {
+      const customer = await createCustomer({
+        email: cartData.email,
+        metafields: cartData.metafields
+      });
+
+      console.log("Customer created:", customer.id);
+    }
   }
   return cart
 }
