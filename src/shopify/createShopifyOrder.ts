@@ -2,6 +2,7 @@ import { API_KEY, API_SECRET_KEY, SHOPIFY_SHOP, ADMIN_ACCESS_TOKEN } from './acc
 
 import '@shopify/shopify-api/adapters/node';
 import { shopifyApi } from "@shopify/shopify-api";
+import { sendEfposSMS } from '../twilio/twilioSms';
 
 const shopify = shopifyApi({
   apiKey: API_KEY,
@@ -22,6 +23,7 @@ const client: any = new shopify.clients.Rest({
 const createOrder = async (req: any) => {
 try {
     // Step 1: Create the Draft Order
+    console.log(req)
     const draftResponse = await client.post({
       path: "orders",
       data: {
@@ -30,8 +32,8 @@ try {
       type: "application/json",
     });
 
-    if (draftResponse.body && draftResponse.body.draft_order) {
-      const properOrder = draftResponse.body?.draft_order;
+    if (draftResponse.body && draftResponse.body.order) {
+      const properOrder = draftResponse.body?.order;
       if (!properOrder) {
         console.error("❌ Failed to create order:", draftResponse.body);
         return;
@@ -53,5 +55,7 @@ try {
 
 
 export const createShopifyOrder = async (req: any) => {
-  await createOrder(req);
+  const orderCreated = await createOrder(req);
+  await sendEfposSMS(req, orderCreated);
+  return orderCreated;
 }
