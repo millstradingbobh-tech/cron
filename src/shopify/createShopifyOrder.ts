@@ -21,13 +21,15 @@ const client: any = new shopify.clients.Rest({
 
 
 const createOrder = async (req: any) => {
+  let sendOrder = req;
+  sendOrder.send_receipt = true;
 try {
     // Step 1: Create the Draft Order
-    console.log(req)
+    console.log(sendOrder)
     const draftResponse = await client.post({
       path: "orders",
       data: {
-        order: req,
+        order: sendOrder,
       },
       type: "application/json",
     });
