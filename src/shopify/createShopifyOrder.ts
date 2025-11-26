@@ -39,7 +39,7 @@ try {
         return;
       }
 
-      console.log(`✅ Order created: ${properOrder.id}`);
+      console.log(`✅ Order created: ${properOrder}`);
 
       
       return properOrder
