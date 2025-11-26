@@ -5,7 +5,7 @@ const client = twilio(TWILIO_SID, TWILIO_TOKEN);
 
 export async function sendEfposSMS(req: any, orderCreated: any) {
     console.log('Start to send SMS');
-    
+
     const auMobile = auMobileToIntl(req.phone);
     try {
         let deliveryText = ' and will be delivered by ' + req.shipping_lines[0].title.toLowerCase();
@@ -25,7 +25,7 @@ export async function sendEfposSMS(req: any, orderCreated: any) {
         const message = await client.messages.create({
             messagingServiceSid: TWILIO_MESSAGING_SERVICE_ID,
             to: auMobile,
-            body: `Your MediHub order #${orderCreated.id} has been received${deliveryText}. For any questions, contact us at 02 8529 1991.`
+            body: `Your MediHub order ${orderCreated.name} has been received${deliveryText}. For any questions, contact us at 02 8529 1991.`
         });
 
         console.log(message);
