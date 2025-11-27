@@ -3,6 +3,8 @@ import { API_KEY, API_SECRET_KEY, SHOPIFY_SHOP, ADMIN_ACCESS_TOKEN } from './acc
 import '@shopify/shopify-api/adapters/node';
 import { shopifyApi } from "@shopify/shopify-api";
 import { sendEfposSMS } from '../twilio/twilioSms';
+import Logger from '../utils/logging';
+
 
 const shopify = shopifyApi({
   apiKey: API_KEY,
@@ -24,8 +26,7 @@ const createOrder = async (req: any) => {
   let sendOrder = req;
   sendOrder.send_receipt = true;
 try {
-    // Step 1: Create the Draft Order
-    console.log(sendOrder)
+    Logger.info('Start create order', sendOrder);
     const draftResponse = await client.post({
       path: "orders",
       data: {
@@ -37,21 +38,21 @@ try {
     if (draftResponse.body && draftResponse.body.order) {
       const properOrder = draftResponse.body?.order;
       if (!properOrder) {
-        console.error("❌ Failed to create order:", draftResponse.body);
+        Logger.error("❌ Failed to create order", draftResponse.body);
         return;
       }
 
-      console.log(`✅ Order created: ${properOrder}`);
+      Logger.info(`✅ Order created`, properOrder);
 
       
       return properOrder
 
     } else {
-      console.error("❌ Shopify returned an error:", draftResponse.body);
+      Logger.error("❌ Shopify returned an error:", draftResponse.body);
     }
 
   } catch (error: any) {
-    console.error("❌ Error creating or completing draft order:", error?.response?.body || error);
+    Logger.error("❌ Error creating or completing draft order:", error?.response?.body || error);
   }
 }
 

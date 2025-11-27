@@ -1,10 +1,11 @@
 const twilio = require("twilio");
 import { TWILIO_SID, TWILIO_TOKEN, TWILIO_MESSAGING_SERVICE_ID } from './access';
+import Logger from '../utils/logging';
 
 const client = twilio(TWILIO_SID, TWILIO_TOKEN);
 
 export async function sendEfposSMS(req: any, orderCreated: any) {
-    console.log('Start to send SMS');
+    Logger.info('Start to send SMS');
 
     const auMobile = auMobileToIntl(req.phone);
     try {
@@ -32,9 +33,9 @@ export async function sendEfposSMS(req: any, orderCreated: any) {
             body: `Your MediHub order ${orderCreated.name} has been received${deliveryText}. For any questions, contact us at 02 8529 1991.`
         });
 
-        console.log(message);
+        Logger.info(message);
     } catch (e) {
-        console.log(e);
+        Logger.error(e);
     }
     
 }

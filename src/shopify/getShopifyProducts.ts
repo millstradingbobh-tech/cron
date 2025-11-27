@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_KEY, API_SECRET_KEY, SHOPIFY_SHOP, ADMIN_ACCESS_TOKEN } from './access';
+import Logger from '../utils/logging';
 
 class ShopifyGraphQLService {
   shopDomain: string | undefined;
@@ -40,11 +41,11 @@ class ShopifyGraphQLService {
         cursor = productsData.edges[productsData.edges.length - 1].cursor;
       }
 
-      console.log(`Retrieved ${allProducts.length} products`);
+      Logger.info(`Retrieved ${allProducts.length} products`, allProducts);
       return allProducts;
 
     } catch (error: any) {
-      console.error('Error fetching products:', error.response?.data || error.message);
+      Logger.error('Error fetching products:', error.response?.data || error.message);
       throw error;
     }
   }
@@ -111,10 +112,10 @@ let returnProducts: any[] = []
 await graphQLService.getAllProducts()
   .then(products => {
     returnProducts = products;
-    console.log('GraphQL Products:', JSON.stringify(products));
+    Logger.info('GraphQL Products:', products);
   })
   .catch(error => {
-    console.error('Error:', error);
+    Logger.error('Error:', error);
   });
 
   return returnProducts;

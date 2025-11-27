@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import Logger from '../utils/logging';
 
 export async function openAndCloseBrowser(url: string, leaveItOn: number = 5000) {
     const browser = await puppeteer.connect({
@@ -12,10 +13,10 @@ export async function openAndCloseBrowser(url: string, leaveItOn: number = 5000)
         await new Promise(resolve => setTimeout(resolve, leaveItOn));
 
     } catch (error) {
-        console.error('Error during browser operation:', error);
+        Logger.error('Error during browser operation:', error);
     } finally {
         await browser.close();
-        console.log('Browser closed.');
+        Logger.info('Browser closed.');
     }
 }
 

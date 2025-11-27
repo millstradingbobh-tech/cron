@@ -2,6 +2,7 @@ import { SHOPIFY_SHOP, STOREFRONT_ACCESS_TOKEN } from './access';
 import { createCustomer } from './createCustomer';
 import { openAndCloseBrowser } from './openUrl';
 import { updateCustomerMetafieldsByEmail } from "./updateCustomerMetafields";
+import Logger from '../utils/logging';
 
 
 // 1️⃣ GraphQL mutation
@@ -58,29 +59,29 @@ async function createCheckout(cartData: any) {
   });
 
   const json: any = await response.json();
-  console.log("RAW RESPONSE:", JSON.stringify(json, null, 2));
+  Logger.info("RAW RESPONSE:", json);
 
   if (json.data.cartCreate.userErrors.length > 0) {
-    console.error("❌ Shopify Errors:", json.data.cartCreate.userErrors);
+    Logger.error("❌ Shopify Errors:", json.data.cartCreate.userErrors);
     return;
   }
 
   const cart = json.data.cartCreate.cart;
-  console.log("✅ Cart ID:", cart.id);
-  console.log("✅ Checkout URL:", cart.checkoutUrl); // ✅ This is your checkout link
+  Logger.info("✅ Cart ID:", cart.id);
+  Logger.info("✅ Checkout URL:", cart.checkoutUrl); // ✅ This is your checkout link
   openAndCloseBrowser(cart.checkoutUrl);
 
   try {
     await updateCustomerMetafieldsByEmail(cartData.email, cartData.metafields);
   } catch (e: any) {
-    console.log(e);
+    Logger.error('Update customer failed', e);
     if (e.message.includes('Customer not found')) {
       const customer = await createCustomer({
         email: cartData.email,
         metafields: cartData.metafields
       });
 
-      console.log("Customer created:", customer.id);
+      Logger.info("Customer created:", customer.id);
     }
   }
   return cart
