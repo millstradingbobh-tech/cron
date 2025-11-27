@@ -9,17 +9,21 @@ export async function sendEfposSMS(req: any, orderCreated: any) {
     const auMobile = auMobileToIntl(req.phone);
     try {
         let deliveryText = ' and will be delivered by ' + req.shipping_lines[0].title.toLowerCase();
-        if (req.shipping_lines[0].title === 'Delivered Today - Between 12pm–5pm') {
+        if (req.shipping_lines?.[0].title === 'Delivered Today - Between 12pm–5pm') {
             deliveryText = ' and will be delivered by this afternoon';
         }
-        if (req.shipping_lines[0].title === 'Delivered Today - Between 6pm–9pm') {
+        if (req.shipping_lines?.[0].title === 'Delivered Today - Between 6pm–9pm') {
             deliveryText = ' and will be delivered by tonight';
         }
-        if (req.shipping_lines[0].title === 'Delivered Tomorrow - Between 12pm–5pm') {
+        if (req.shipping_lines?.[0].title === 'Delivered Tomorrow - Between 12pm–5pm') {
             deliveryText = ' and will be delivered by tomorrow afternoon';
         }
-        if (req.shipping_lines[0].title === 'Delivered Tomorrow - Between 6pm–9pm') {
+        if (req.shipping_lines?.[0].title === 'Delivered Tomorrow - Between 6pm–9pm') {
             deliveryText = ' and will be delivered by tomorrow night';
+        }
+
+        if (req.transactions?.[0].gateway === 'ndis') {
+            deliveryText = ' and will be delivered after NDIS payment is received';
         }
 
         const message = await client.messages.create({
