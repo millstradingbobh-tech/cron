@@ -33,7 +33,7 @@ export async function sendEfposSMS(req: any, orderCreated: any) {
             body: `Your MediHub order ${orderCreated.name} has been received${deliveryText}. For any questions, contact us at 02 8529 1991.`
         });
 
-        Logger.info(message);
+        Logger.info("SMS sent", message);
     } catch (e) {
         Logger.error(e);
     }
