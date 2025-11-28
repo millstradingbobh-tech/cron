@@ -81,7 +81,7 @@ async function createCheckout(cartData: any) {
         metafields: cartData.metafields
       });
 
-      Logger.info("Customer created:", customer.id);
+      Logger.info("No customer for abandoned checkout and customer created:", customer.id);
     }
   }
   return cart
