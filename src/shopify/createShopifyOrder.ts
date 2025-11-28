@@ -52,7 +52,7 @@ try {
     }
 
   } catch (error: any) {
-    Logger.error("❌ Error creating or completing draft order:", error?.response?.body || error);
+    Logger.error("❌ Error creating or completing order:", error?.response?.body || error);
   }
 }
 
