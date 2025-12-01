@@ -10,6 +10,7 @@ export async function sendEfposSMS(req: any, orderCreated: any) {
     const auMobile = auMobileToIntl(req.phone);
     try {
         let deliveryText = ' and will be delivered by ' + req.shipping_lines[0].title.toLowerCase();
+        let lastText = '. For any questions, contact us at 02 8529 1991.';
         if (req.shipping_lines?.[0].title === 'Delivered Today - Between 12pm–5pm') {
             deliveryText = ' and will be delivered by this afternoon';
         }
@@ -24,13 +25,14 @@ export async function sendEfposSMS(req: any, orderCreated: any) {
         }
 
         if (req.transactions?.[0].gateway === 'ndis') {
-            deliveryText = ' and will be delivered after NDIS payment is received';
+            deliveryText = `. An invoice has been emailed to ${req.email}.`;
+            lastText = '';
         }
 
         const message = await client.messages.create({
             messagingServiceSid: TWILIO_MESSAGING_SERVICE_ID,
             to: auMobile,
-            body: `Your MediHub order ${orderCreated.name} has been received${deliveryText}. For any questions, contact us at 02 8529 1991.`
+            body: `Your MediHub order ${orderCreated.name} has been received${deliveryText}${lastText}`
         });
 
         Logger.info("SMS sent", message);
