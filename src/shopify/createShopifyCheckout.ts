@@ -70,15 +70,15 @@ async function createCheckout(cartData: any) {
   Logger.info("✅ Cart ID:", cart.id);
   Logger.info("✅ Checkout URL:", cart.checkoutUrl); // ✅ This is your checkout link
   openAndCloseBrowser(cart.checkoutUrl);
-
+  const metaFields = adjustMetaFields(cartData.metafields);
   try {
-    await updateCustomerMetafieldsByEmail(cartData.email, cartData.metafields);
+    await updateCustomerMetafieldsByEmail(cartData.email, metaFields);
   } catch (e: any) {
     Logger.error('Update customer failed', e);
     if (e.message.includes('Customer not found')) {
       const customer = await createCustomer({
         email: cartData.email,
-        metafields: cartData.metafields
+        metafields: metaFields
       });
 
       Logger.info("No customer for abandoned checkout and customer created:", customer.id);
@@ -87,6 +87,16 @@ async function createCheckout(cartData: any) {
   return cart
 }
 
+const adjustMetaFields = (meta: any)=> {
+  const returnMeta = meta;
+  returnMeta.push({
+      "namespace": "custom",
+      "key": "referral_expiry",
+      "type": "date",
+      "value": new Date().toISOString()
+  });
+  return returnMeta;
+}
 
 export const createShopifyCheckout = async (reqBody: any) => {
   if (reqBody.line_items.length === 0) {
