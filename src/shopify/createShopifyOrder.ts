@@ -26,6 +26,15 @@ const client: any = new shopify.clients.Rest({
 const createOrder = async (req: any) => {
   let sendOrder = req;
   sendOrder.send_receipt = true;
+
+  if (req.transactions[0].gateway === 'ndis') {
+    delete sendOrder.transactions;
+    // delete sendOrder.financial_status;
+
+    // sendOrder.payment_gateway_names = ['manual'];
+    // sendOrder.invoice_sent_at = null;
+    sendOrder.payment_pending = true;
+  }
 try {
     // Logger.info('Start create order', sendOrder);
     const draftResponse = await client.post({
