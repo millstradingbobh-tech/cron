@@ -4,6 +4,7 @@ import '@shopify/shopify-api/adapters/node';
 import { shopifyApi } from "@shopify/shopify-api";
 import { sendEfposSMS } from '../twilio/twilioSms';
 import Logger from '../utils/logging';
+import { createOrderTransaction } from './createOrderTransaction';
 
 
 const shopify = shopifyApi({
@@ -26,7 +27,7 @@ const createOrder = async (req: any) => {
   let sendOrder = req;
   sendOrder.send_receipt = true;
 try {
-    Logger.info('Start create order', sendOrder);
+    // Logger.info('Start create order', sendOrder);
     const draftResponse = await client.post({
       path: "orders",
       data: {
@@ -59,6 +60,9 @@ try {
 
 export const createShopifyOrder = async (req: any) => {
   const orderCreated = await createOrder(req);
+  if (req.transactions[0].gateway !== 'ndis') {
+    await createOrderTransaction(req, orderCreated);
+  }
   await sendEfposSMS(req, orderCreated);
   return orderCreated;
 }
