@@ -8,6 +8,7 @@ import { createShopifyCheckout } from './src/shopify/createShopifyCheckout';
 import { createShopifyOrder } from './src/shopify/createShopifyOrder';
 import { getProducts } from './src/shopify/getShopifyProducts';
 import { apiInterceptor } from './src/utils/inteceptor';
+import { generateConnectionToken, createPaymentIntent } from './src/tap/stripe';
 
 const app = express();
 app.use(express.json());
@@ -44,6 +45,31 @@ app.post("/api/shopify/createCheckout", async (req, res) => {
 app.get("/api/shopify/getProducts", async (req, res) => {
     const products = await getProducts();
     res.json({ products });
+});
+
+app.post('/stripe/tap/connection-token', async (req, res) => {
+  try {
+    const secret = await generateConnectionToken();
+    res.json({ secret });
+  } catch (error) {
+    console.error('Error generating connection token:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/stripe/tap/create-payment-intent', async (req, res) => {
+  try {
+    const { amount } = req.body;
+    if (!amount || typeof amount !== 'number') {
+      return res.status(400).json({ error: 'Invalid amount' });
+    }
+
+    const clientSecret = await createPaymentIntent(amount);
+    res.json({ clientSecret });
+  } catch (error) {
+    console.error('Error creating payment intent:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 app.listen(process.env.PORT || 8080);
