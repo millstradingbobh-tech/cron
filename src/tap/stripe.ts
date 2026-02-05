@@ -15,7 +15,6 @@ export async function createPaymentIntent(req: any) {
     amount,
     currency: 'aud',
     payment_method_types: ['card_present'],
-    capture_method: 'manual',
     metadata: {
       description,
       supplier,
