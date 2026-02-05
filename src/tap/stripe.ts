@@ -8,12 +8,20 @@ export async function generateConnectionToken() {
   return token.secret;
 }
 
-export async function createPaymentIntent(amount: number) {
+export async function createPaymentIntent(req: any) {
+  const { amount, description, meta, supplier, terminal_id } = req;
+
   const paymentIntent = await stripe.paymentIntents.create({
     amount,
     currency: 'aud',
-    payment_method_types: ['card_present'], // for terminal payments
+    payment_method_types: ['card_present'],
     capture_method: 'manual',
+    metadata: {
+      description,
+      supplier,
+      terminal_id,
+      ...meta
+    }
   });
   return paymentIntent.client_secret;
 }

@@ -59,12 +59,7 @@ app.post('/stripe/tap/connection-token', async (req, res) => {
 
 app.post('/stripe/tap/create-payment-intent', async (req, res) => {
   try {
-    const { amount } = req.body;
-    if (!amount || typeof amount !== 'number') {
-      return res.status(400).json({ error: 'Invalid amount' });
-    }
-
-    const clientSecret = await createPaymentIntent(amount);
+    const clientSecret = await createPaymentIntent(req.body);
     res.json({ clientSecret });
   } catch (error) {
     console.error('Error creating payment intent:', error);
