@@ -9,6 +9,7 @@ import { createShopifyOrder } from './src/shopify/createShopifyOrder';
 import { getProducts } from './src/shopify/getShopifyProducts';
 import { apiInterceptor } from './src/utils/inteceptor';
 import { generateConnectionToken, createPaymentIntent } from './src/tap/stripe';
+import { createShopifyDraftOrder } from './src/shopify/createShopifyDraftOrder';
 
 const app = express();
 app.use(express.json());
@@ -34,6 +35,11 @@ app.post("/api/shopify/rates", (req, res) => {
 
 app.post("/api/shopify/createOrder", async (req, res) => {
     const order = await createShopifyOrder(req.body);
+    res.json({ order });
+});
+
+app.post("/api/shopify/createDraftOrder", async (req, res) => {
+    const order = await createShopifyDraftOrder(req.body);
     res.json({ order });
 });
 
