@@ -78,8 +78,45 @@ const convertDraftOrderMetafields = (metafields: any[] = []) => {
 
 };
 
+const sendDraftOrderInvoice = async (
+  draftId: string,
+  email?: string
+) => {
+  try {
+
+    const response = await client.post({
+      path: `draft_orders/${draftId}/send_invoice`,
+      data: {
+        draft_order_invoice: {
+          to: email, // optional (Shopify uses draft order email if not provided)
+          subject: "Your Order Invoice",
+          custom_message: "Please complete your purchase using the link below."
+        }
+      },
+      type: "application/json",
+    });
+
+    Logger.info("📧 Invoice sent for draft order", draftId);
+
+    return response.body;
+
+  } catch (error: any) {
+    Logger.error(
+      "❌ Error sending invoice:",
+      error?.response?.body || error
+    );
+  }
+};
+
 export const createShopifyDraftOrder = async (req: any) => {
-  const orderCreated = await createDraftOrder(req);
-  // await sendEfposSMS(req, orderCreated);
-  return orderCreated;
+  const draftOrder = await createDraftOrder(req);
+  if (!draftOrder) return;
+
+  // ✅ Send invoice instead of completing
+  await sendDraftOrderInvoice(
+    draftOrder.id,
+    req.email // optional
+  );
+
+  return draftOrder;
 }
