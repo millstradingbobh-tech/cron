@@ -86,8 +86,16 @@ const isPaymentSuccess = async (req: any) => {
   const paymentStatus = await checkPaymentStatus(paymentIntentId);
   const transactionAmount = Number(req.transactions[0].amount) * 100; //dollar to cent
   const paymentAmount = Number(paymentStatus?.amount);
-  if ((paymentStatus?.status === 'succeeded') && (transactionAmount === paymentAmount)) {
+  const isWithinLast5Mins = paymentStatus?.created && isWithinLast5Minutes(paymentStatus?.created);
+  if ((paymentStatus?.status === 'succeeded') && (transactionAmount === paymentAmount) && isWithinLast5Mins) {
     return true;
   }
   return false;
+}
+
+function isWithinLast5Minutes(created: number) {
+  const now = Math.floor(Date.now() / 1000); // current time in seconds
+  const diff = now - created;
+
+  return diff >= 0 && diff <= 5 * 60;
 }
