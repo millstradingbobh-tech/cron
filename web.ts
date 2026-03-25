@@ -10,6 +10,7 @@ import { getProducts } from './src/shopify/getShopifyProducts';
 import { apiInterceptor } from './src/utils/inteceptor';
 import { generateConnectionToken, createPaymentIntent } from './src/tap/stripe';
 import { createShopifyDraftOrder } from './src/shopify/createShopifyDraftOrder';
+import { createOrderWithPaymentStatusCheck } from './src/shopify/createShopifyOrderWithPaymentStatusCheck';
 
 const app = express();
 app.use(express.json());
@@ -69,6 +70,16 @@ app.post('/stripe/tap/create-payment-intent', async (req, res) => {
     res.json({ clientSecret });
   } catch (error) {
     console.error('Error creating payment intent:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/shopify/createOrderWithPaymentStatusCheck', async (req, res) => {
+  try {
+    const order = await createOrderWithPaymentStatusCheck(req.body);
+    res.json({ order });
+  } catch (error) {
+    console.error('Error createOrderWithPaymentStatusCheck:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

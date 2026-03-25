@@ -24,3 +24,14 @@ export async function createPaymentIntent(req: any) {
   });
   return paymentIntent.client_secret;
 }
+
+export async function checkPaymentStatus(paymentIntentId: string) {
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    console.log(paymentIntent);
+    return paymentIntent;
+  } catch (error) {
+    console.error(error);
+  }
+}
