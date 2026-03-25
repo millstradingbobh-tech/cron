@@ -84,7 +84,7 @@ export const createOrderWithPaymentStatusCheck = async (req: any) => {
 const isPaymentSuccess = async (req: any) => {
   const paymentIntentId = req.paymentIntentId;
   const paymentStatus = await checkPaymentStatus(paymentIntentId);
-  const transactionAmount = Number(req.transactions.amount) * 100; //dollar to cent
+  const transactionAmount = Number(req.transactions[0].amount) * 100; //dollar to cent
   const paymentAmount = Number(paymentStatus?.amount);
   if ((paymentStatus?.status === 'succeeded') && (transactionAmount === paymentAmount)) {
     return true;
