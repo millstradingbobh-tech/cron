@@ -71,11 +71,13 @@ try {
 export const createOrderWithPaymentStatusCheck = async (req: any) => {
   const isSuccess = await isPaymentSuccess(req);
   console.log(isSuccess);
+  
   const orderCreated = await createOrder(req);
   if (req.transactions[0].gateway !== 'ndis' && isSuccess) {
     await createOrderTransaction(req, orderCreated);
+    await sendEfposSMS(req, orderCreated);
   }
-  await sendEfposSMS(req, orderCreated);
+  
   return orderCreated;
 }
 
