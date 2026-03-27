@@ -3,6 +3,7 @@ import { API_KEY, API_SECRET_KEY, SHOPIFY_SHOP, ADMIN_ACCESS_TOKEN } from './acc
 import '@shopify/shopify-api/adapters/node';
 import { shopifyApi } from "@shopify/shopify-api";
 import Logger from '../utils/logging';
+import { sendEfposSMS } from '../twilio/twilioSms';
 
 
 const shopify = shopifyApi({
@@ -110,11 +111,23 @@ export const createShopifyDraftOrder = async (req: any) => {
   const draftOrder = await createDraftOrder(req);
   if (!draftOrder) return;
 
-  // ✅ Send invoice instead of completing
-  await sendDraftOrderInvoice(
-    draftOrder.id,
-    req.email // optional
-  );
+  if (req.isSendingSMS) {
+  
+    const draftRes = await client.get({
+      path: `draft_orders/${draftOrder.id}`,
+    });
+
+    // console.log('invoiceResinvoiceResinvoiceRes', draftRes.body.draft_order.invoice_url);
+
+    await sendEfposSMS(req, draftRes.body.draft_order);
+
+  } else {
+    await sendDraftOrderInvoice(
+      draftOrder.id,
+      req.email // optional
+    );
+  }
+  
 
   return draftOrder;
 }

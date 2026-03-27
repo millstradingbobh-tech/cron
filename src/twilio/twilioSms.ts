@@ -24,9 +24,13 @@ export async function sendEfposSMS(req: any, orderCreated: any) {
             deliveryText = ' and will be delivered by tomorrow night';
         }
 
-        if (req.transactions?.[0].gateway === 'ndis') {
+        if ((!req.isSendingSMS) && req.transactions?.[0].gateway === 'ndis') {
             deliveryText = `. An invoice has been emailed to ${req.email}.`;
             lastText = '';
+        }
+
+        if (req.isSendingSMS && orderCreated.invoice_url) {
+            deliveryText = `. Complete your payment: ${orderCreated.invoice_url}`;
         }
 
         const message = await client.messages.create({
