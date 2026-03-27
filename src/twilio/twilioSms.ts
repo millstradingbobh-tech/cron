@@ -9,6 +9,7 @@ export async function sendEfposSMS(req: any, orderCreated: any) {
 
     const auMobile = auMobileToIntl(req.phone);
     try {
+        let orderName = orderCreated.name;
         let deliveryText = ' and will be delivered by ' + req.shipping_lines[0].title.toLowerCase();
         let lastText = '. For any questions, contact us at 02 8529 1991.';
         if (req.shipping_lines?.[0].title === 'Delivered Today - Between 12pm–5pm') {
@@ -31,12 +32,13 @@ export async function sendEfposSMS(req: any, orderCreated: any) {
 
         if (req.isSendingSMS && orderCreated.invoice_url) {
             deliveryText = `. Complete your payment: ${orderCreated.invoice_url}`;
+            orderName = convertDraftOrderName(orderName);
         }
 
         const message = await client.messages.create({
             messagingServiceSid: TWILIO_MESSAGING_SERVICE_ID,
             to: auMobile,
-            body: `Your MediHub order ${orderCreated.name} has been received${deliveryText}${lastText}`
+            body: `Your MediHub order ${orderName} has been received${deliveryText}${lastText}`
         });
 
         Logger.info("SMS sent", message);
@@ -58,4 +60,13 @@ function auMobileToIntl(number: string) {
   }
 
   return number;
+}
+
+function convertDraftOrderName(name: string) {
+    try {
+        return 'DO-' + (String(100000 + Number(name.split('#D')[1])));
+    } catch (e) {
+        return name;
+    }
+    
 }
