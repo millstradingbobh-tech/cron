@@ -11,6 +11,7 @@ import { apiInterceptor } from './src/utils/inteceptor';
 import { generateConnectionToken, createPaymentIntent } from './src/tap/stripe';
 import { createShopifyDraftOrder } from './src/shopify/createShopifyDraftOrder';
 import { createOrderWithPaymentStatusCheck } from './src/shopify/createShopifyOrderWithPaymentStatusCheck';
+import { referProduct } from './src/referral';
 
 const app = express();
 app.use(express.json());
@@ -82,6 +83,27 @@ app.post('/api/shopify/createOrderWithPaymentStatusCheck', async (req, res) => {
     console.error('Error createOrderWithPaymentStatusCheck:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+});
+
+app.post("/api/referral", async (req, res) => {
+    try {
+      const { email, productId, companyId, companyName, locationId } = req.body;
+
+      const response = await referProduct({
+        email,
+        productId,
+        companyId,
+        companyName,
+        locationId
+      });
+
+      return res.json(response);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        error: "Internal server error",
+      });
+    }
 });
 
 app.listen(process.env.PORT || 8080);

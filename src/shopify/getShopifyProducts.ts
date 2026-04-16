@@ -97,6 +97,85 @@ class ShopifyGraphQLService {
       }
     `;
   }
+
+  buildProductByIdQuery(productId: string) {
+    return `
+      {
+        product(id: "gid://shopify/Product/${productId}") {
+          id
+          title
+          description
+          handle
+          vendor
+          productType
+          status
+          tags
+          variants(first: 10) {
+            edges {
+              node {
+                id
+                title
+                price
+                sku
+                inventoryQuantity
+              }
+            }
+          }
+          images(first: 5) {
+            edges {
+              node {
+                id
+                src
+                altText
+              }
+            }
+          }
+          metafields(first: 20) {
+            edges {
+              node {
+                namespace
+                key
+                value
+              }
+            }
+          }
+        }
+      }
+    `;
+  }
+
+  async getProductById(productId: string) {
+    try {
+      const query = this.buildProductByIdQuery(productId);
+
+      const response = await axios.post(
+        this.url,
+        { query },
+        {
+          headers: {
+            'X-Shopify-Access-Token': this.accessToken,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      Logger.info('Full response:', response.data);
+
+      const product = response.data.data.product;
+
+      if (!product) {
+        Logger.warn(`Product not found for ID: ${productId}`);
+        return null;
+      }
+
+      Logger.info(`Retrieved product ${productId}`, product);
+      return product;
+
+    } catch (error: any) {
+      Logger.error('Error fetching product by ID:', error.response?.data || error.message);
+      throw error;
+    }
+  }
 }
 
 
@@ -120,3 +199,18 @@ await graphQLService.getAllProducts()
 
   return returnProducts;
 }
+
+
+export const getProductById = async (id: string) => {
+  const graphQLService = new ShopifyGraphQLService(
+    SHOPIFY_SHOP,
+    ADMIN_ACCESS_TOKEN
+  );
+  try {
+    const product = await graphQLService.getProductById(id);
+    return product;
+  } catch (error) {
+    Logger.error('Error:', error);
+    return null;
+  }
+};
